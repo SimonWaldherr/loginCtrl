@@ -5,10 +5,11 @@
  * Repo: https://github.com/SimonWaldherr/loginCtrl
  * Demo: http://cdn.simon.waldherr.eu/projects/loginCtrl/
  * License: MIT
- * Version: 0.09
+ * Version: 0.10
+ *
+ * File: confirm/mysql.php
  *
  */
-
 
 include './../session.inc.php';
 startsession();
@@ -27,6 +28,9 @@ $select['emailadr'] = $emailadr;
 $returnarray = easysql_mysql_select($select, 1);
 
 $confirmCode = hash("SHA256", 'confirmMail("'.$returnarray[0]['emailadr'].$returnarray[0]['timestam'].$returnarray[0]['username'].$returnarray[0]['id'].'");');
+
+
+
 
 if(($checksum == md5($confirmCode))&&($returnarray[0]['status'] == 1))
   {

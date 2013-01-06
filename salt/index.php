@@ -5,7 +5,9 @@
  * Repo: https://github.com/SimonWaldherr/loginCtrl
  * Demo: http://cdn.simon.waldherr.eu/projects/loginCtrl/
  * License: MIT
- * Version: 0.09
+ * Version: 0.10
+ *
+ * File: salt/index.php
  *
  */
 
@@ -32,7 +34,7 @@ function randomsalt()
     $return = hash("SHA512", $return.$random[rand(0,7)].$random[rand(0,7)].$random[rand(0,7)].rand(0,99));
     
     //return the random stuff
-    $return = hash("SHA512", '123');
+    $return = hash("SHA512", $return);
     return $return;
   }
 
@@ -41,11 +43,15 @@ if((!isset($_SESSION['salt']))||((time() - $_SESSION['timestamp']) > 600))
     $randsalt = randomsalt();
     $_SESSION['salt'] = $randsalt;
     $_SESSION['timestamp'] = time();
-    echo $randsalt;
+    echo json_encode(array('salt'     => $randsalt
+                          ,'code'    => 35
+                          ,'success' => true));
   }
 else
   {
-    echo $_SESSION['salt'];
+    echo json_encode(array('salt'     => $_SESSION['salt']
+                          ,'code'    => 34
+                          ,'success' => true));
   }
 
 die();

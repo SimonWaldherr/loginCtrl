@@ -3,7 +3,9 @@
  * Repo: https://github.com/SimonWaldherr/loginCtrl
  * Demo: http://cdn.simon.waldherr.eu/projects/loginCtrl/
  * License: MIT
- * Version: 0.09
+ * Version: 0.10
+ *
+ * File: script.js
  *
  */
 
@@ -22,12 +24,15 @@ function getSalt()
     reqwest(
       {
           url: './salt/'
-        , type: 'html'
+        , type: 'json'
         , method: 'post'
         , data: { timestamp: gettimestamp() }
         , success: function (resp)
             {
-              serversalt = resp;
+              if(resp['success'] == true)
+                {
+                  serversalt = resp['salt'];
+                }
             }
       })
   }
@@ -52,13 +57,13 @@ function getHSHPW(idmail, idpwd, salt)
     return hshpwd;
   }
 
-function ajaxsignup()
+function ajaxsignup(emailid, passwordid, nameid)
   {
     var SHA512 = new Hashes.SHA512;
-    var hpw    = getHPW(getValue('email'), getValue('pass'));
+    var hpw    = getHPW(getValue(emailid), getValue(passwordid));
     var hpw1   = SHA512.hex(hpw.substr(0,48)+hpw);
     var hpw2   = SHA512.hex(hpw.substr(46)+hpw);
-    if((getValue('email')=='')||(getValue('name')=='')||(getValue('pass')==''))
+    if((getValue(emailid)=='')||(getValue(nameid)=='')||(getValue(passwordid)==''))
       {
         popover('Please fill every field');
         return false;
@@ -68,7 +73,7 @@ function ajaxsignup()
           url: './database/?signup'
         , type: 'json'
         , method: 'post'
-        , data: { mail: getValue('email').toLowerCase(), hpwd1: hpw1, hpwd2: hpw2, name: getValue('name') }
+        , data: { mail: getValue(emailid).toLowerCase(), hpwd1: hpw1, hpwd2: hpw2, name: getValue(nameid) }
         , success: function (resp)
             {
               if(resp['success'] == false)
@@ -95,7 +100,7 @@ function ajaxsignup()
       })
   }
 
-function ajaxchange()
+function ajaxchange(emailid, passwordid, nameid)
   {
     var SHA512 = new Hashes.SHA512;
     var oldpw  = prompt("to make changes, you have to enter your password", "");
@@ -106,17 +111,17 @@ function ajaxchange()
       }
     var hpw = getHPW(session_usermail, oldpw);
     
-    if(getValue('nemail') != '')
+    if(getValue(emailid) != '')
       {
-        var usemail = getValue('nemail');
+        var usemail = getValue(emailid).toLowerCase();
       }
     else
       {
         var usemail = session_usermail;
       }
-    if(getValue('npass') != '')
+    if(getValue(passwordid) != '')
       {
-        var usepass = getValue('npass');
+        var usepass = getValue(passwordid);
       }
     else
       {
@@ -135,7 +140,7 @@ function ajaxchange()
           url: './database/?change'
         , type: 'json'
         , method: 'post'
-        , data: { salt: clientsalt, mail: session_usermail.toLowerCase(), nmail: getValue('nemail'), hpwd1: hpw1, hpwd2: hpw2, nhpwd1: nhpw1, nhpwd2: nhpw2, name: session_username, nname: getValue('nname') }
+        , data: { salt: clientsalt, mail: session_usermail.toLowerCase(), nmail: getValue(emailid), hpwd1: hpw1, hpwd2: hpw2, nhpwd1: nhpw1, nhpwd2: nhpw2, name: session_username, nname: getValue(nameid) }
         , success: function (resp)
             {
               if(resp['success'] == false)
@@ -153,7 +158,7 @@ function ajaxchange()
                     }
                   else
                     {
-                      popoverredirect('Your User-ID is: '+resp);
+                      popoverredirect('Your User-ID is: '+resp['msg']);
                       window.setTimeout('window.location = "'+selfurl+'"', 12000);
                       return true;
                     }
@@ -162,21 +167,21 @@ function ajaxchange()
       })
   }
 
-function ajaxlogin()
+function ajaxlogin(emailid, passwordid, ssiid)
   {
     var SHA512 = new Hashes.SHA512;
-    var hpw    = getHPW(getValue('lemail'), getValue('lpass'));
+    var hpw    = getHPW(getValue(emailid).toLowerCase(), getValue(passwordid));
     var hpw1   = SHA512.hex(SHA512.hex(hpw.substr(0,48)+hpw)+serversalt+clientsalt);
     var hpw2   = SHA512.hex(hpw.substr(46)+hpw);
     var ssi    = false;
-    if(document.getElementById('ssi').checked == true){ssi=true;}
+    if(document.getElementById(ssiid).checked == true){ssi=true;}
     
     reqwest(
       {
           url: './database/?login'
         , type: 'json'
         , method: 'post'
-        , data: { mail: getValue('lemail').toLowerCase(), hpwd1: hpw1, hpwd2: hpw2, salt: clientsalt, ssi: ssi }
+        , data: { mail: getValue(emailid).toLowerCase(), hpwd1: hpw1, hpwd2: hpw2, salt: clientsalt, ssi: ssi }
         , success: function (resp)
             {
               if(resp['success'] == true)
@@ -184,69 +189,57 @@ function ajaxlogin()
                   popoverredirect(resp['msg']);
                   window.setTimeout('window.location = "'+selfurl+'"', 12000);
                 }
+              else
+                {
+                  popover(resp['msg']);
+                }
             }
       })
   }
 
 function ajaxlogout()
-{
-  reqwest(
-    {
-        url: './database/?logout'
-      , type: 'json'
-      , method: 'post'
-      , data: { logout: 'true', timestamp: gettimestamp() }
-      , success: function (resp)
-          {
-            if(resp['success'] == true)
-              {
-                window.setTimeout('popoverredirect("logout successful")', 200);
-                window.setTimeout('window.location = "'+selfurl+'"', 12000);
-              }
-          }
-    })
-}
+  {
+    reqwest(
+      {
+          url: './database/?logout'
+        , type: 'json'
+        , method: 'post'
+        , data: { logout: 'true', timestamp: gettimestamp() }
+        , success: function (resp)
+            {
+              if(resp['success'] == true)
+                {
+                  window.setTimeout('popoverredirect("logout successful")', 200);
+                  window.setTimeout('window.location = "'+selfurl+'"', 12000);
+                }
+            }
+      })
+  }
 
 function ajaxclear()
-{
-
-  reqwest(
-    {
-        url: './database/?logout'
-      , type: 'json'
-      , method: 'post'
-      , data: { logout: 'true', clear: 'true', timestamp: gettimestamp() }
-      , success: function (resp)
-          {
-            if(resp['success'] == true)
-              {
-                window.setTimeout('popoverredirect("logout successful")', 200);
-                window.setTimeout('window.location = "'+selfurl+'"', 12000);
-              }
-          }
-    })
-}
+  {
+    reqwest(
+      {
+          url: './database/?logout'
+        , type: 'json'
+        , method: 'post'
+        , data: { logout: 'true', clear: 'true', timestamp: gettimestamp() }
+        , success: function (resp)
+            {
+              if(resp['success'] == true)
+                {
+                  window.setTimeout('popoverredirect("logout successful")', 200);
+                  window.setTimeout('window.location = "'+selfurl+'"', 12000);
+                }
+            }
+      })
+  }
 
 function gettimestamp()
   {
     var nowts = new Date();
     return nowts.getTime();
   }
-
-function getdata()
-  {
-    reqwest(
-      {
-          url: 'data.php?get=parameter'
-        , type: 'html'
-        , method: 'post'
-        , data: { foo: 'bar', int: 100 }
-        , success: function (resp)
-            {
-              document.getElementById('content1').innerHTML = resp;
-            }
-      })
-    }
 
 function popover(text)
   {
@@ -256,7 +249,6 @@ function popover(text)
 function popoverredirect(text)
   {
     TINY.box.show({html:text,width:300,minHeight:20,closejs:function(){jsredirect()}});
-    
   }
 
 function jsredirect()
@@ -267,5 +259,6 @@ function jsredirect()
 function createSalt()
   {
     var SHA512 = new Hashes.SHA512;
-    clientsalt = SHA512.hex(gettimestamp()+Math.random());
+    clientsalt = SHA512.hex(gettimestamp()+' '+Math.random()*1000);
+    console.log(clientsalt);
   }

@@ -3,7 +3,9 @@
  * Repo: https://github.com/SimonWaldherr/loginCtrl
  * Demo: http://cdn.simon.waldherr.eu/projects/loginCtrl/
  * License: MIT
- * Version: 0.09
+ * Version: 0.10
+ *
+ * File: style.css
  *
  */
 
@@ -58,10 +60,6 @@ body{
   padding-left: 2px;
 }
 
-.boxes li {
-  //margin: 5px;
-}
-
 .boxes label{
   position: relative;
   width: 114px;
@@ -97,16 +95,12 @@ body{
   visibility: hidden;
 }
 
-#content {
-margin: 15px;
-top: 15px;
-position: relative;
+#content{
+  margin: 15px;
+  top: 15px;
+  position: relative;
 }
 
-#loginbox{
-  
-}
-
-#signupbox{
-  
+#changebox{
+  display: none;
 }

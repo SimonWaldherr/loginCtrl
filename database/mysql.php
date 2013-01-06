@@ -5,7 +5,9 @@
  * Repo: https://github.com/SimonWaldherr/loginCtrl
  * Demo: http://cdn.simon.waldherr.eu/projects/loginCtrl/
  * License: MIT
- * Version: 0.09
+ * Version: 0.10
+ *
+ * File: database/mysql.php
  *
  */
 
@@ -79,6 +81,7 @@ function lc_login($mysqlarray, $emailadr, $hashdpwd1, $hashdpwd2, $clientsalt)
                     ,'success' => false);
       }
   }
+
 
 
 
@@ -177,6 +180,7 @@ function lc_signup($mysqlarray, $username, $emailadr, $hashdpwd1, $hashdpwd2, $u
         $insert['status']    = $status;
         $insert['timestam']  = time();
         $insert['hash']      = md5($insert['uid'].$insert['username'].$insert['userhash'].$insert['usersalt'].$insert['password1'].$insert['password2'].$insert['emailadr'].$insert['status'].$insert['timestam']);
+        
         
         $rowid[0] = easysql_mysql_insert($insert);
         $rowid[1] = $insert['hash'];

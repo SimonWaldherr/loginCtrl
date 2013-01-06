@@ -10,7 +10,7 @@ loginCtrl...
 * never saves passwords unencrypted
 * never submit passwords unencrypted
 * always hash passwords with random salts
-* allows users to change their data
+* allows users to change their data (currently broken)
 * check given eMail-adresses
 * works with mySQL and SQLite
 
@@ -22,16 +22,23 @@ loginCtrl...
 
 ##INFO
 
-VERSION: 0.09  
+VERSION: 0.10  
 LICENSE: MIT  
 LANGUAGES: PHP, JS  
 DATABASES: SQLite and MySQL (PostgreSQL coming soon)  
 
 ##DEMO
 
-[Example v0.09](http://cdn.simon.waldherr.eu/projects/loginCtrl/example.php) *(the newest example)*  
+[Example v0.10](http://cdn.simon.waldherr.eu/projects/loginCtrl/example.php) *(the newest example)*  
 
 since version 0.04, their is only the newest example in the repo. To view other/older examples, please checkout an older commit.
+
+##HISTORY
+
+Version | Download
+--------|---------
+0.10    | [ZIP](https://github.com/SimonWaldherr/loginCtrl/archive/V0.10.zip)  
+0.09    | [ZIP](https://github.com/SimonWaldherr/loginCtrl/archive/V0.09.zip)  
 
 ##REQUIRE
 
@@ -48,7 +55,7 @@ Repo                                                                        | Li
 ##LICENSE
 
 The MIT License (MIT)  
-Copyright © 2012 Simon Waldherr
+Copyright © 2013 Simon Waldherr
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

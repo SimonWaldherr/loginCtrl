@@ -5,7 +5,9 @@
  * Repo: https://github.com/SimonWaldherr/loginCtrl
  * Demo: http://cdn.simon.waldherr.eu/projects/loginCtrl/
  * License: MIT
- * Version: 0.09
+ * Version: 0.10
+ *
+ * File: example.php
  *
  */
 
@@ -26,12 +28,12 @@ if($_POST['logout'] == 'true')
   <meta charset="utf-8">
   <title>reqwest login/signup demos</title>
   
-  <link href="./style.css?v0.04" rel="stylesheet" type="text/css">
-  <link href="./popover.css?v0.04" rel="stylesheet" type="text/css">
-  <script type="text/javascript" src="./repos/reqwest/reqwest.min.js?v0.04"></script>
-  <script type="text/javascript" src="./repos/jsHashes/client/src/hashes.min.js?v0.04"></script>
-  <script type="text/javascript" src="./repos/lightbox.js/tinybox.js?v0.04"></script>
-  <script type="text/javascript" src="./script.js?v0.04"></script>
+  <link href="./style.css" rel="stylesheet" type="text/css">
+  <link href="./popover.css" rel="stylesheet" type="text/css">
+  <script type="text/javascript" src="./repos/reqwest/reqwest.min.js"></script>
+  <script type="text/javascript" src="./repos/jsHashes/client/src/hashes.min.js"></script>
+  <script type="text/javascript" src="./repos/lightbox.js/tinybox.js"></script>
+  <script type="text/javascript" src="./script.js"></script>
   <script>
     var userid, username, usermail, clientsalt, serversalt;
     var selfurl = 'http://cdn.simon.waldherr.eu/projects/loginCtrl/example.php';
@@ -76,7 +78,7 @@ if($_POST['logout'] == 'true')
         document.getElementById('loginbox').style.display = 'none';
         document.getElementById('spaceone').style.display = 'none';
         document.getElementById('spacetwo').style.display = 'none';
-        document.getElementById('changebox').style.display = 'block';
+        //document.getElementById('changebox').style.display = 'block';
       }
   </script>
   
@@ -122,7 +124,9 @@ else
     echo '<div id="userid"></div><div id="username"></div><div id="usermail"></div><div id="contentdiv">here you can put your content</div>';
   }
 
-?></div>
+?>
+
+      </div>
     </div>
   </div>
   <div id="box" class="roundborder box" style="height: 710px;">
@@ -133,19 +137,16 @@ else
             <li><label for="name">Name:</label><input type="text" name="name" id="name"></li>
             <li><label for="email">E-Mail:</label><input type="text" name="email" id="email"></li>
             <li><label for="pass">Password:</label><input type="password" name="pass" id="pass"></li>
-            
-            <li class="submitbutton" onclick="javascript:ajaxsignup();"><span id="btnsignup" class="btn">signup</span></li>
+            <li class="submitbutton" onclick="javascript:ajaxsignup('email', 'pass', 'name');"><span id="btnsignup" class="btn">signup</span></li>
           </ul>
         </div>
-        
         <div id="spaceone" class="spacing"></div>
-        
         <div id="loginbox" class="boxes">
           <ul>
             <li><label for="lemail">E-Mail:</label><input type="text" name="lemail" id="lemail"></li>
             <li><label for="lpass">Password:</label><input type="password" name="lpass" id="lpass"></li>
             <li><label for="ssi">stay signed in:</label><input type="checkbox" name="ssi" id="ssi"></li>
-            <li class="submitbutton" onclick="javascript:ajaxlogin();"><span id="btnlogin" class="btn">login</span></li>
+            <li class="submitbutton" onclick="javascript:ajaxlogin('lemail', 'lpass', 'ssi');"><span id="btnlogin" class="btn">login</span></li>
           </ul>
         </div>
         
@@ -156,23 +157,19 @@ else
             <li class="submitbutton" onclick="javascript:ajaxlogout();"><span id="btnlogout" class="btn">logout</span></li>
           </ul>
         </div>
-        
         <div class="spacing"></div>
-        
         <div id="clearbox" class="boxes">
           <ul>
             <li class="submitbutton" onclick="javascript:ajaxclear();"><span id="btnclear" class="btn">clear</span></li>
           </ul>
         </div>
-        
         <div class="spacing"></div>
-        
         <div id="changebox" class="boxes">
           <ul>
             <li><label for="nname">Name:</label><input type="text" name="nname" id="nname"></li>
             <li><label for="nemail">E-Mail:</label><input type="text" name="nemail" id="nemail"></li>
             <li><label for="npass">Password:</label><input type="password" name="npass" id="npass"></li>
-            <li class="submitbutton" onclick="javascript:ajaxchange();"><span id="btnsignup" class="btn">change</span></li>
+            <li class="submitbutton" onclick="javascript:ajaxchange('nemail', 'npass', 'nname');"><span id="btnsignup" class="btn">change</span></li>
           </ul>
         </div>
       </form>

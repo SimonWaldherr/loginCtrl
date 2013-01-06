@@ -5,7 +5,9 @@
  * Repo: https://github.com/SimonWaldherr/loginCtrl
  * Demo: http://cdn.simon.waldherr.eu/projects/loginCtrl/
  * License: MIT
- * Version: 0.09
+ * Version: 0.10
+ *
+ * File: database/sqlite.php
  *
  */
 
@@ -162,7 +164,7 @@ function lc_signup($filename, $username, $emailadr, $hashdpwd1, $hashdpwd2, $uid
               }
             if($emailexist)
               {
-                return array('msg'     => 'emailadress already taken'
+                return array('msg'     => 'emailadress exists already in the DB'
                             ,'success' => false);
               }
           }
@@ -180,8 +182,13 @@ function lc_signup($filename, $username, $emailadr, $hashdpwd1, $hashdpwd2, $uid
         $insert['timestam']  = time();
         $insert['hash']      = md5($insert['uid'].$insert['username'].$insert['userhash'].$insert['usersalt'].$insert['password1'].$insert['password2'].$insert['emailadr'].$insert['status'].$insert['timestam']);
         
+        //echo json_encode(easysql_sqlite_insert($insert));
+        //die();
+        
         $rowid[0] = easysql_sqlite_insert($insert);
         $rowid[1] = $insert['hash'];
+        
+        //echo json_encode($insert);
         
         if($rowid[0] > 0)
           {
@@ -283,7 +290,6 @@ elseif(isset($_GET['logout']))
   {
     if(($_POST['logout'] == 'true')&&($_SESSION['userid'] != ''))
       {
-        
         delusersession();
         echo json_encode(array('msg'     => 'logout successful'
                               ,'code'    => 41
@@ -291,7 +297,6 @@ elseif(isset($_GET['logout']))
       }
     if(($_POST['clear'] == 'true')&&($_SESSION['userid'] != ''))
       {
-        
         clearsession();
         echo json_encode(array('msg'     => 'clear all successful'
                               ,'code'    => 42
