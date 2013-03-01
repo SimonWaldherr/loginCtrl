@@ -8,7 +8,7 @@ download the repo with all submodules.
 the best way to do this is:
 
 ```bash
-git clone git://github.com/jquery/jquery.git
+git clone git://github.com/SimonWaldherr/loginCtrl.git
 ```
 
 ###2. rename files (mysql/sqlite)

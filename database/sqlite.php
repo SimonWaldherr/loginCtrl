@@ -124,7 +124,7 @@ function lc_signup($filename, $username, $emailadr, $hashdpwd1, $hashdpwd2, $uid
         
         $select[0]           = $filename;
         $select[1]           = 'user';
-        $select['username']  = $username;
+        $select['userhash']  = $userhash;
         $select['emailadr']  = $emailadr;
         $returnarray = easysql_sqlite_select($select, 'no', 'OR');
         
@@ -249,8 +249,7 @@ elseif(isset($_GET['signup']))
 elseif(isset($_GET['change']))
   {
     $login = lc_login($filename, $_SESSION['usermail'], $_POST['hpwd1'], $_POST['hpwd2'], $_POST['salt']);
-    
-    if(is_int($login[0]))
+    if($login['success'] == 1)
       {
         if($_POST['nname'] != ''){$nusername = $_POST['nname'];}
         else                     {$nusername = $_SESSION['username'];}
@@ -269,7 +268,6 @@ elseif(isset($_GET['change']))
         $clientsalt = $_POST['salt'];
         
         $signuparray = lc_signup($filename, $nusername, $nemailadr, $nhashdpwd1, $nhashdpwd2, $_SESSION['userid'], $status);
-        
         $userdataChangeText = 'Your Account has changed by a user with the IP '.$_SERVER["REMOTE_ADDR"].' at the UNIX Timestamp '.$_SERVER["REQUEST_TIME"].'. The new data of this Account is:'."\n\n";
         $userdataChangeText .= 'Username: '.$nusername."\n";
         $userdataChangeText .= 'eMail adress: '.$nemailadr."\n";

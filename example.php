@@ -23,11 +23,11 @@ if($_POST['logout'] == 'true')
       }
   }
 
-?><html>
+?><!DOCTYPE html><html>
 <head>
   <meta charset="utf-8">
   <title>reqwest login/signup demos</title>
-  
+  <link href="./repos/baf/css/baf.min.css" rel="stylesheet" type="text/css">
   <link href="./style.css" rel="stylesheet" type="text/css">
   <link href="./popover.css" rel="stylesheet" type="text/css">
   <script type="text/javascript" src="./repos/reqwest/reqwest.min.js"></script>
@@ -54,7 +54,7 @@ if($_POST['logout'] == 'true')
           }
         getSalt();
         createSalt();
-        var aktiv = window.setInterval("getSalt();", 192000);
+        var aktiv = window.setInterval("getSalt();", 540000); //1000*60*9 = 9 Minuten = 540000 Millisekunden
       }
     
     function showlogin()
@@ -130,47 +130,50 @@ else
     </div>
   </div>
   <div id="box" class="roundborder box" style="height: 710px;">
-    <div id="boxinbox" class="roundborder boxinbox">
+    <div id="boxinbox input-prepend baf-input cente" class="roundborder boxinbox">
       <form action="./contact/" method="post" id="contactForm" onsubmit="return false;">
         <div id="signupbox" class="boxes">
-          <ul>
-            <li><label for="name">Name:</label><input type="text" name="name" id="name"></li>
-            <li><label for="email">E-Mail:</label><input type="text" name="email" id="email"></li>
-            <li><label for="pass">Password:</label><input type="password" name="pass" id="pass"></li>
-            <li class="submitbutton" onclick="javascript:ajaxsignup('email', 'pass', 'name');"><span id="btnsignup" class="btn">signup</span></li>
-          </ul>
+          <div class="input-prepend baf-input cente">
+            <label class="baf add-on w90" for="name">Name:</label><input type="text" name="name" id="name">
+            <label class="baf add-on w90" for="email">E-Mail:</label><input type="text" name="email" id="email">
+            <label class="baf add-on w90" for="pass">Password:</label><input type="password" name="pass" id="pass">
+            <br/>
+            <div class="baf" onclick="javascript:ajaxsignup('email', 'pass', 'name');"><span id="btnsignup" class="btn">signup</span></div>
+          </div>
         </div>
         <div id="spaceone" class="spacing"></div>
         <div id="loginbox" class="boxes">
-          <ul>
-            <li><label for="lemail">E-Mail:</label><input type="text" name="lemail" id="lemail"></li>
-            <li><label for="lpass">Password:</label><input type="password" name="lpass" id="lpass"></li>
-            <li><label for="ssi">stay signed in:</label><input type="checkbox" name="ssi" id="ssi"></li>
-            <li class="submitbutton" onclick="javascript:ajaxlogin('lemail', 'lpass', 'ssi');"><span id="btnlogin" class="btn">login</span></li>
-          </ul>
+          <div class="input-prepend baf-input cente">
+            <label class="baf add-on w90" for="lemail">E-Mail:</label><input type="text" name="lemail" id="lemail">
+            <label class="baf add-on w90" for="lpass">Password:</label><input type="password" name="lpass" id="lpass"><br/>
+            <label class="baf add-on w90" for="ssi">stay signed in:</label><input type="checkbox" name="ssi" id="ssi">
+            <br/>
+            <div class="baf" onclick="javascript:ajaxlogin('lemail', 'lpass', 'ssi');"><span id="btnlogin" class="btn">login</span></div>
+          </div>
         </div>
         
         <div id="spacetwo" class="spacing"></div>
         
         <div id="logoutbox" class="boxes">
-          <ul>
-            <li class="submitbutton" onclick="javascript:ajaxlogout();"><span id="btnlogout" class="btn">logout</span></li>
-          </ul>
+          <div>
+            <div class="baf" onclick="javascript:ajaxlogout();"><span id="btnlogout" class="btn">logout</span></div>
+          </div>
         </div>
         <div class="spacing"></div>
         <div id="clearbox" class="boxes">
-          <ul>
-            <li class="submitbutton" onclick="javascript:ajaxclear();"><span id="btnclear" class="btn">clear</span></li>
-          </ul>
+          <div>
+            <div class="baf" onclick="javascript:ajaxclear();"><span id="btnclear" class="btn">clear</span></div>
+          </div>
         </div>
         <div class="spacing"></div>
         <div id="changebox" class="boxes">
-          <ul>
-            <li><label for="nname">Name:</label><input type="text" name="nname" id="nname"></li>
-            <li><label for="nemail">E-Mail:</label><input type="text" name="nemail" id="nemail"></li>
-            <li><label for="npass">Password:</label><input type="password" name="npass" id="npass"></li>
-            <li class="submitbutton" onclick="javascript:ajaxchange('nemail', 'npass', 'nname');"><span id="btnsignup" class="btn">change</span></li>
-          </ul>
+          <div class="input-prepend baf-input cente">
+            <label class="baf add-on w90" for="nname">Name:</label><input type="text" name="nname" id="nname">
+            <label class="baf add-on w90" for="nemail">E-Mail:</label><input type="text" name="nemail" id="nemail">
+            <label class="baf add-on w90" for="npass">Password:</label><input type="password" name="npass" id="npass">
+            <br/>
+            <div class="baf" onclick="javascript:ajaxchange('nemail', 'npass', 'nname');"><span id="btnsignup" class="btn">change</span></div>
+          </div>
         </div>
       </form>
     </div>
