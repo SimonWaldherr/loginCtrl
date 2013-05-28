@@ -22,3 +22,6 @@
 [submodule "repos/smtpclass"]
 	path = repos/smtpclass
 	url = git://github.com/KaiserSoft/PHP_class_email.git
+[submodule "repos/majaX.js"]
+	path = repos/majaX.js
+	url = https://github.com/SimonWaldherr/majaX.js.git
