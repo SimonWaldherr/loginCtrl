@@ -61,7 +61,7 @@ Version | Download
 
 Repo                                                                        | License | DL
 ----------------------------------------------------------------------------|---------|----------
-[SimonWaldherr/reqwest](https://github.com/SimonWaldherr/reqwest)           | MIT     | [zip](https://github.com/SimonWaldherr/reqwest/zipball/master)
+[SimonWaldherr/majaX.js](https://github.com/SimonWaldherr/majaX.js)         | MIT     | [zip](https://github.com/SimonWaldherr/reqwest/zipball/master)
 [SimonWaldherr/easySQL](https://github.com/SimonWaldherr/easySQL)           | MIT     | [zip](https://github.com/SimonWaldherr/easySQL/zipball/master)
 [h2non/jsHashes](https://github.com/h2non/jsHashes)                         | BSD     | [zip](https://github.com/h2non/jsHashes/zipball/master)
 [SimonWaldherr/lightbox.js](https://github.com/SimonWaldherr/lightbox.js)   | CC-By   | [zip](https://github.com/SimonWaldherr/lightbox.js/zipball/master)

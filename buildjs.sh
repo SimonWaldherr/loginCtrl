@@ -1,1 +1,1 @@
-./compressjs.sh ./repos/reqwest/reqwest.js ./repos/jsHashes/hashes.js ./repos/lightbox.js/tinybox.js ./js-css/script.js
+./compressjs.sh ./repos/majaX.js/majax.js ./repos/jsHashes/hashes.js ./repos/lightbox.js/tinybox.js ./js-css/script.js

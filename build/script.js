@@ -1,542 +1,499 @@
-/*!
- * Reqwest! A general purpose XHR connection manager
- * (c) Dustin Diaz 2012
- * https://github.com/ded/reqwest
- * license MIT
- */ (function (name, context, definition) {
-    "use strict";
-    if (typeof (module) !== 'undefined' && module.exports) {
-        module.exports = definition();
-    } else if (typeof (define) === 'function' && define.amd) {
-        define(definition);
-    } else {
-        context[name] = definition();
-    }
-})('reqwest', this, function () {
-    "use strict";
-    var win = window,
-        doc = document,
-        twoHundo = /^20\d$/,
-        byTag = 'getElementsByTagName',
-        readyState = 'readyState',
-        contentType = 'Content-Type',
-        requestedWith = 'X-Requested-With',
-        head = doc[byTag]('head')[0],
-        uniqid = 0,
-        callbackPrefix = 'reqwest_' + (+new Date()),
-        lastValue,
-        xmlHttpRequest = 'XMLHttpRequest',
-        isArray,
-        defaultHeaders,
-        xhr,
-        noop = function () {};
+/*
+ * majaX
+ *
+ * Copyright 2013, Simon Waldherr - http://simon.waldherr.eu/
+ * Released under the MIT Licence
+ * http://opensource.org/licenses/MIT
+ *
+ * Github:  https://github.com/simonwaldherr/majaX.js/
+ * Version: 0.1.6
+ */
 
-    if (typeof (Array.isArray) === 'function') {
-        isArray = Array.isArray;
-    } else {
-        isArray = function (a) {
-            return a instanceof Array;
-        };
-    }
+/*jslint browser: true, white: true, plusplus: true, indent: 2, regexp: true, forin: true */
+/*global ActiveXObject */
+/*exported majaX */
 
-    defaultHeaders = {
-        contentType: 'application/x-www-form-urlencoded',
-        requestedWith: xmlHttpRequest,
-        accept: {
-            '*': 'text/javascript, text/html, application/xml, text/xml, */*',
-            xml: 'application/xml, text/xml',
-            html: 'text/html',
-            text: 'text/plain',
-            json: 'application/json, text/javascript',
-            js: 'application/javascript, text/javascript'
-        }
+function majaX(data, successcallback, errorcallback) {
+  "use strict";
+  var url, method, port, type, faildata, ajax, ajaxTimeout, mimes, mimetype, senddata, sendkeys, sendstring, regex, urlparts = {}, i = 0;
+
+  function countChars(string, split) {
+    string = string.split(split);
+    if (typeof string === 'object') {
+      return string.length - 1;
+    }
+    return 0;
+  }
+
+  if (data.url === undefined) {
+    return false;
+  }
+
+  regex = /((http[s]?:\/\/)?([\.:\/?&]+)?([^\.:\/?&]+)?)/gm;
+  urlparts.regex = data.url.match(regex);
+  urlparts.clean = {
+    'protocol': '',
+    'domain': '',
+    'port': '',
+    'path': '',
+    'fileextension': '',
+    'query': ''
+  };
+  for (i = 0; i < urlparts.regex.length; i++) {
+    if (countChars(urlparts.regex[i], '://') === 1) {
+      urlparts.clean.protocol = urlparts.regex[i] === undefined ? false : urlparts.regex[i].split('://')[0];
+      urlparts.clean.domain = urlparts.regex[i] === undefined ? false : urlparts.regex[i].split('://')[1];
+    } else if ((countChars(urlparts.regex[i], '/') === 0) && (countChars(urlparts.regex[i], ':') === 0) && (urlparts.clean.path === '')) {
+      urlparts.clean.domain += urlparts.regex[i] === undefined ? false : urlparts.regex[i];
+    } else if ((countChars(urlparts.regex[i], ':') === 1) && (urlparts.clean.path === '')) {
+      urlparts.clean.port = urlparts.regex[i] === undefined ? false : urlparts.regex[i].split(':')[1];
+    } else if ((countChars(urlparts.regex[i], '?') === 0) && (countChars(urlparts.regex[i], '&') === 0)) {
+      urlparts.clean.path += urlparts.regex[i] === undefined ? false : urlparts.regex[i];
+    } else {
+      urlparts.clean.query += urlparts.regex[i] === undefined ? false : urlparts.regex[i];
+    }
+  }
+  if(urlparts.clean.query === '') {
+    urlparts.clean.fileextension = urlparts.clean.path.split('.')[urlparts.clean.path.split('.').length - 1];
+  } else {
+    urlparts.clean.fileextension = urlparts.clean.path.split('.')[urlparts.clean.path.split('.').length - 2];
+  }
+
+  mimes = {
+    'txt': 'text/plain',
+    'json': 'application/json',
+    'atom': 'application/atom+xml',
+    'rss': 'application/rss+xml',
+    'soap': 'application/soap+xml',
+    'xml': 'application/xml',
+    'svg': 'image/svg+xml',
+    'css': 'text/css',
+    'csv': 'text/csv',
+    'html': 'text/html',
+    'vcf': 'text/vcard'
+  };
+
+  url = data.url === undefined ? false : data.url;
+  method = data.method === undefined ? 'GET' : data.method;
+  port = data.port === undefined ? urlparts.clean.port === undefined ? '80' : urlparts.clean.port : data.port;
+  type = data.type === undefined ? urlparts.clean.fileextension === undefined ? 'plain' : urlparts.clean.fileextension : data.type;
+  mimetype = data.mimetype === undefined ? mimes[urlparts.clean.fileextension] === undefined ? 'text/plain' : mimes[urlparts.clean.fileextension] : data.mimetype;
+  senddata = data.data === undefined ? false : data.data;
+  faildata = data.faildata === undefined ? false : data.faildata;
+
+  if (method === 'DEBUG') {
+    return {
+      "url": url,
+      "urlparts": urlparts.clean,
+      "port": port,
+      "type": type,
+      "mime": mimetype,
+      "data": data
     };
+  }
 
-    if (win[xmlHttpRequest]) {
-        xhr = function () {
-            return new XMLHttpRequest();
-        };
-    } else {
-        xhr = function () {
-            return new ActiveXObject('Microsoft.XMLHTTP');
-        };
-    }
+  function escapeHtmlEntities(text) {
+    return text.replace(/[\u00A0-\u2666<>\&]/g, function (c) {
+        return '&' + (escapeHtmlEntities.entityTable[c.charCodeAt(0)] || '#' + c.charCodeAt(0)) + ';';
+      });
+  }
+  escapeHtmlEntities.entityTable = {
+    34: 'quot',
+    38: 'amp',
+    39: 'apos',
+    60: 'lt',
+    62: 'gt',
+    160: 'nbsp',
+    161: 'iexcl',
+    162: 'cent',
+    163: 'pound',
+    164: 'curren',
+    165: 'yen',
+    166: 'brvbar',
+    167: 'sect',
+    168: 'uml',
+    169: 'copy',
+    170: 'ordf',
+    171: 'laquo',
+    172: 'not',
+    173: 'shy',
+    174: 'reg',
+    175: 'macr',
+    176: 'deg',
+    177: 'plusmn',
+    178: 'sup2',
+    179: 'sup3',
+    180: 'acute',
+    181: 'micro',
+    182: 'para',
+    183: 'middot',
+    184: 'cedil',
+    185: 'sup1',
+    186: 'ordm',
+    187: 'raquo',
+    188: 'frac14',
+    189: 'frac12',
+    190: 'frac34',
+    191: 'iquest',
+    192: 'Agrave',
+    193: 'Aacute',
+    194: 'Acirc',
+    195: 'Atilde',
+    196: 'Auml',
+    197: 'Aring',
+    198: 'AElig',
+    199: 'Ccedil',
+    200: 'Egrave',
+    201: 'Eacute',
+    202: 'Ecirc',
+    203: 'Euml',
+    204: 'Igrave',
+    205: 'Iacute',
+    206: 'Icirc',
+    207: 'Iuml',
+    208: 'ETH',
+    209: 'Ntilde',
+    210: 'Ograve',
+    211: 'Oacute',
+    212: 'Ocirc',
+    213: 'Otilde',
+    214: 'Ouml',
+    215: 'times',
+    216: 'Oslash',
+    217: 'Ugrave',
+    218: 'Uacute',
+    219: 'Ucirc',
+    220: 'Uuml',
+    221: 'Yacute',
+    222: 'THORN',
+    223: 'szlig',
+    224: 'agrave',
+    225: 'aacute',
+    226: 'acirc',
+    227: 'atilde',
+    228: 'auml',
+    229: 'aring',
+    230: 'aelig',
+    231: 'ccedil',
+    232: 'egrave',
+    233: 'eacute',
+    234: 'ecirc',
+    235: 'euml',
+    236: 'igrave',
+    237: 'iacute',
+    238: 'icirc',
+    239: 'iuml',
+    240: 'eth',
+    241: 'ntilde',
+    242: 'ograve',
+    243: 'oacute',
+    244: 'ocirc',
+    245: 'otilde',
+    246: 'ouml',
+    247: 'divide',
+    248: 'oslash',
+    249: 'ugrave',
+    250: 'uacute',
+    251: 'ucirc',
+    252: 'uuml',
+    253: 'yacute',
+    254: 'thorn',
+    255: 'yuml',
+    402: 'fnof',
+    913: 'Alpha',
+    914: 'Beta',
+    915: 'Gamma',
+    916: 'Delta',
+    917: 'Epsilon',
+    918: 'Zeta',
+    919: 'Eta',
+    920: 'Theta',
+    921: 'Iota',
+    922: 'Kappa',
+    923: 'Lambda',
+    924: 'Mu',
+    925: 'Nu',
+    926: 'Xi',
+    927: 'Omicron',
+    928: 'Pi',
+    929: 'Rho',
+    931: 'Sigma',
+    932: 'Tau',
+    933: 'Upsilon',
+    934: 'Phi',
+    935: 'Chi',
+    936: 'Psi',
+    937: 'Omega',
+    945: 'alpha',
+    946: 'beta',
+    947: 'gamma',
+    948: 'delta',
+    949: 'epsilon',
+    950: 'zeta',
+    951: 'eta',
+    952: 'theta',
+    953: 'iota',
+    954: 'kappa',
+    955: 'lambda',
+    956: 'mu',
+    957: 'nu',
+    958: 'xi',
+    959: 'omicron',
+    960: 'pi',
+    961: 'rho',
+    962: 'sigmaf',
+    963: 'sigma',
+    964: 'tau',
+    965: 'upsilon',
+    966: 'phi',
+    967: 'chi',
+    968: 'psi',
+    969: 'omega',
+    977: 'thetasym',
+    978: 'upsih',
+    982: 'piv',
+    8226: 'bull',
+    8230: 'hellip',
+    8242: 'prime',
+    8243: 'Prime',
+    8254: 'oline',
+    8260: 'frasl',
+    8472: 'weierp',
+    8465: 'image',
+    8476: 'real',
+    8482: 'trade',
+    8501: 'alefsym',
+    8592: 'larr',
+    8593: 'uarr',
+    8594: 'rarr',
+    8595: 'darr',
+    8596: 'harr',
+    8629: 'crarr',
+    8656: 'lArr',
+    8657: 'uArr',
+    8658: 'rArr',
+    8659: 'dArr',
+    8660: 'hArr',
+    8704: 'forall',
+    8706: 'part',
+    8707: 'exist',
+    8709: 'empty',
+    8711: 'nabla',
+    8712: 'isin',
+    8713: 'notin',
+    8715: 'ni',
+    8719: 'prod',
+    8721: 'sum',
+    8722: 'minus',
+    8727: 'lowast',
+    8730: 'radic',
+    8733: 'prop',
+    8734: 'infin',
+    8736: 'ang',
+    8743: 'and',
+    8744: 'or',
+    8745: 'cap',
+    8746: 'cup',
+    8747: 'int',
+    8756: 'there4',
+    8764: 'sim',
+    8773: 'cong',
+    8776: 'asymp',
+    8800: 'ne',
+    8801: 'equiv',
+    8804: 'le',
+    8805: 'ge',
+    8834: 'sub',
+    8835: 'sup',
+    8836: 'nsub',
+    8838: 'sube',
+    8839: 'supe',
+    8853: 'oplus',
+    8855: 'otimes',
+    8869: 'perp',
+    8901: 'sdot',
+    8968: 'lceil',
+    8969: 'rceil',
+    8970: 'lfloor',
+    8971: 'rfloor',
+    9001: 'lang',
+    9002: 'rang',
+    9674: 'loz',
+    9824: 'spades',
+    9827: 'clubs',
+    9829: 'hearts',
+    9830: 'diams',
+    338: 'OElig',
+    339: 'oelig',
+    352: 'Scaron',
+    353: 'scaron',
+    376: 'Yuml',
+    710: 'circ',
+    732: 'tilde',
+    8194: 'ensp',
+    8195: 'emsp',
+    8201: 'thinsp',
+    8204: 'zwnj',
+    8205: 'zwj',
+    8206: 'lrm',
+    8207: 'rlm',
+    8211: 'ndash',
+    8212: 'mdash',
+    8216: 'lsquo',
+    8217: 'rsquo',
+    8218: 'sbquo',
+    8220: 'ldquo',
+    8221: 'rdquo',
+    8222: 'bdquo',
+    8224: 'dagger',
+    8225: 'Dagger',
+    8240: 'permil',
+    8249: 'lsaquo',
+    8250: 'rsaquo',
+    8364: 'euro'
+  };
 
-    function handleReadyState(r, success, error) {
-        return function () {
-            // use _aborted to mitigate against IE err c00c023f
-            // (can't read props on aborted request objects)
-            if (r._aborted) {
-                return error(r.request);
+  function getText(string) {
+    var re = /<([^<>]*)>([^\/]*)<(\/[^<>]*)>/gmi;
+    return string.replace(re, '');
+  }
+
+  function getXMLasObject(xmlstring) {
+    var xmlroot = document.createElement('div'),
+      foo = {};
+    xmlroot.innerHTML = xmlstring;
+
+    function returnChilds(element, node, deep) {
+      var i, ii, obj, key, plaintext, returnArray = [],
+        childs = node.childNodes.length;
+      ii = 0;
+      for (i = 0; i < childs; i++) {
+        if (node.childNodes[i].localName !== null) {
+          element[ii] = {};
+          for (key in node.childNodes[i]) {
+            obj = node.childNodes[i][key];
+            if ((typeof obj === 'string') || (typeof obj === 'number')) {
+              if ((key !== 'accessKey') && (key !== 'baseURI') && (key !== 'className') && (key !== 'contentEditable') && (key !== 'dir') && (key !== 'namespaceURI') && (obj !== "") && (key !== key.toUpperCase()) && (obj !== 0) && (key !== 'childs') && (key !== 'textContent') && (key !== 'nodeType') && (key !== 'tabIndex') && (key !== 'innerHTML') && (key !== 'outerHTML')) {
+                element[ii][key] = obj;
+              } else if ((key === 'innerHTML') || (key === 'outerHTML')) {
+                element[ii][key] = escapeHtmlEntities(obj);
+              }
             }
-            if (r.request && r.request[readyState] === 4) {
-                r.request.onreadystatechange = noop;
-                if (twoHundo.test(r.request.status)) {
-                    success(r.request);
-                } else {
-                    error(r.request);
-                }
-            }
-        };
-    }
-
-    function setHeaders(http, o) {
-        var headers = o.headers || {}, h
-
-        headers.Accept = headers.Accept || defaultHeaders.accept[o.type] || defaultHeaders.accept['*']
-
-        // breaks cross-origin requests with legacy browsers
-        if (!o.crossOrigin && !headers[requestedWith]) headers[requestedWith] = defaultHeaders.requestedWith
-        if (!headers[contentType]) headers[contentType] = o.contentType || defaultHeaders.contentType
-        for (h in headers) {
-            headers.hasOwnProperty(h);
-            http.setRequestHeader(h, headers[h]);
+          }
+          plaintext = getText(node.childNodes[i].innerHTML).trim();
+          if (plaintext !== "") {
+            element[ii].textContent = plaintext;
+          }
+          if (node.childNodes[i].childNodes.length > 1) {
+            element[ii].childs = returnChilds(returnArray, node.childNodes[i], deep + 1);
+          }
+          ii++;
         }
+      }
+      return element;
     }
+    return returnChilds(foo, xmlroot, 1);
+  }
 
-    function setCredentials(http, o) {
-        if (typeof (o.withCredentials) !== 'undefined' && typeof (http.withCredentials) !== 'undefined') {
-            http.withCredentials = !! o.withCredentials
+  function getCSVasArray(csvstring) {
+    var regexCSV, arrayCSV, arrMatches, strMatchedDelimiter, strMatchedValue, strDelimiter = ';';
+
+    function cleanArray(actual) {
+      var newArray = [], clean, i = 0;
+      for (i = 0; i < actual.length; i++) {
+        if ((typeof actual[i] === 'string') || (typeof actual[i] === 'number')) {
+          newArray.push(actual[i]);
+        } else if (typeof actual[i] === 'object') {
+          clean = cleanArray(actual[i]);
+          if (clean[0] !== '') {
+            newArray.push(cleanArray(actual[i]));
+          }
         }
+      }
+      return newArray;
     }
 
-    function generalCallback(data) {
-        lastValue = data
+    regexCSV = new RegExp(("(\\" + strDelimiter + "|\\r?\\n|\\r|^)" + "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" + "([^\"\\" + strDelimiter + "\\r\\n]*))"), "gi");
+    arrayCSV = [[]];
+    arrMatches = regexCSV.exec(csvstring);
+
+    while (arrMatches) {
+      strMatchedDelimiter = arrMatches[1];
+      if (strMatchedDelimiter.length && (strMatchedDelimiter !== strDelimiter)) {
+        arrayCSV.push([]);
+      }
+      if (arrMatches[2]) {
+        strMatchedValue = arrMatches[2].replace(new RegExp("\"\"", "g"), "\"");
+      } else {
+        strMatchedValue = arrMatches[3];
+      }
+      arrayCSV[arrayCSV.length - 1].push(strMatchedValue);
+      arrMatches = regexCSV.exec(csvstring);
     }
+    return cleanArray(arrayCSV);
+  }
 
-    function urlappend(url, s) {
-        return url + (/\?/.test(url) ? '&' : '?') + s
-    }
+  ajax = (window.ActiveXObject) ? new ActiveXObject("Microsoft.XMLHTTP") : (XMLHttpRequest && new XMLHttpRequest()) || null;
+  ajaxTimeout = window.setTimeout(function () {
+      ajax.abort();
+    }, 6000);
 
-    function handleJsonp(o, fn, err, url) {
-        var reqId = uniqid++,
-            cbkey = o.jsonpCallback || 'callback' // the 'callback' key
-            ,
-            cbval = o.jsonpCallbackName || reqwest.getcallbackPrefix(reqId)
-            // , cbval = o.jsonpCallbackName || ('reqwest_' + reqId) // the 'callback' value
-            ,
-            cbreg = new RegExp('((^|\\?|&)' + cbkey + ')=([^&]+)'),
-            match = url.match(cbreg),
-            script = doc.createElement('script'),
-            loaded = 0,
-            isIE10 = navigator.userAgent.indexOf('MSIE 10.0') !== -1
-
-        if (match) {
-            if (match[3] === '?') {
-                url = url.replace(cbreg, '$1=' + cbval) // wildcard callback func name
-            } else {
-                cbval = match[3] // provided callback func name
-            }
+  ajax.onreadystatechange = function () {
+    if (ajax.readyState === 4) {
+      if (ajax.status === 200) {
+        clearTimeout(ajaxTimeout);
+        if (ajax.status !== 200) {
+          errorcallback(faildata, ajax);
         } else {
-            url = urlappend(url, cbkey + '=' + cbval) // no callback details, add 'em
+          type = type.toLowerCase();
+          if (type === 'json') {
+            successcallback(JSON.parse(ajax.responseText), ajax);
+          } else if (type === 'xml') {
+            successcallback(getXMLasObject(ajax.responseText), ajax);
+          } else if (type === 'csv') {
+            successcallback(getCSVasArray(ajax.responseText), ajax);
+          } else {
+            successcallback(ajax.responseText, ajax);
+          }
         }
-
-        win[cbval] = generalCallback
-
-        script.type = 'text/javascript'
-        script.src = url
-        script.async = true
-        if (typeof (script.onreadystatechange) !== 'undefined' && !isIE10) {
-            // need this for IE due to out-of-order onreadystatechange(), binding script
-            // execution to an event listener gives us control over when the script
-            // is executed. See http://jaubourg.net/2010/07/loading-script-as-onclick-handler-of.html
-            //
-            // if this hack is used in IE10 jsonp callback are never called
-            script.event = 'onclick'
-            script.htmlFor = script.id = '_reqwest_' + reqId
-        }
-
-        script.onload = script.onreadystatechange = function () {
-            if ((script[readyState] && script[readyState] !== 'complete' && script[readyState] !== 'loaded') || loaded) {
-                return false
-            }
-            script.onload = script.onreadystatechange = null
-            script.onclick && script.onclick()
-            // Call the user callback with the last value stored and clean up values and scripts.
-            o.success && o.success(lastValue)
-            lastValue = undefined
-            head.removeChild(script)
-            loaded = 1
-        }
-
-        // Add the script to the DOM head
-        head.appendChild(script)
-
-        // Enable JSONP timeout
-        return {
-            abort: function () {
-                script.onload = script.onreadystatechange = null
-                o.error && o.error({}, 'Request is aborted: timeout', {})
-                lastValue = undefined
-                head.removeChild(script)
-                loaded = 1
-            }
-        }
+      }
     }
+  };
 
-    function getRequest(fn, err) {
-        var o = this.o,
-            url, data, http,
-            method = (o.method || 'GET').toUpperCase();
-        if (typeof (o) === 'string') {
-            url = o;
-        } else {
-            url = o.url;
-        }
-        // convert non-string objects to query-string form unless o.processData is false
-        if ((o.processData !== false) && (o.data) && (typeof (o.data) !== 'string')) {
-            data = reqwest.toQueryString(o.data);
-        } else {
-            data = (o.data || null);
-        }
-
-        // if we're working on a GET request and we have data then we should append
-        // query string to end of URL and not post data
-        if ((o.type === 'jsonp' || method === 'GET') && data) {
-            url = urlappend(url, data)
-            data = null
-        }
-
-        if (o.type === 'jsonp') {
-            return handleJsonp(o, fn, err, url);
-        }
-
-        http = xhr();
-        http.open(method, url, true);
-        setHeaders(http, o);
-        setCredentials(http, o);
-        http.onreadystatechange = handleReadyState(this, fn, err);
-        o.before && o.before(http);
-        http.send(data);
-        return http;
+  i = 0;
+  sendstring = '';
+  if (senddata !== false) {
+    for (sendkeys in senddata) {
+      if (i !== 0) {
+        sendstring += '&';
+      }
+      sendstring += sendkeys + '=' + senddata[sendkeys];
+      i++;
     }
+  }
 
-    function Reqwest(o, fn) {
-        this.o = o;
-        this.fn = fn;
-
-        init.apply(this, arguments);
+  if (method === 'GET') {
+    if (sendstring !== '') {
+      if (urlparts.clean.query !== '') {
+        url = url + '&' + sendstring;
+      } else {
+        url = url + '?' + sendstring;
+      }
     }
-
-    function setType(url) {
-        var m = url.match(/\.(json|jsonp|html|xml)(\?|$)/);
-        return m ? m[1] : 'js';
-    }
-
-    function init(o, fn) {
-
-        this.url = typeof o === 'string' ? o : o.url;
-        this.timeout = null;
-
-        // whether request has been fulfilled for purpose
-        // of tracking the Promises
-        this._fulfilled = false;
-        // success handlers
-        this._fulfillmentHandlers = [];
-        // error handlers
-        this._errorHandlers = [];
-        // complete (both success and fail) handlers
-        this._completeHandlers = [];
-        this._erred = false;
-        this._responseArgs = {};
-
-        var self = this,
-            type = o.type || setType(this.url)
-
-            fn = fn || function () {}
-
-        if (o.timeout) {
-            this.timeout = setTimeout(function () {
-                self.abort()
-            }, o.timeout)
-        }
-
-        if (o.success) {
-            this._fulfillmentHandlers.push(function () {
-                o.success.apply(o, arguments)
-            })
-        }
-
-        if (o.error) {
-            this._errorHandlers.push(function () {
-                o.error.apply(o, arguments)
-            })
-        }
-
-        if (o.complete) {
-            this._completeHandlers.push(function () {
-                o.complete.apply(o, arguments)
-            })
-        }
-
-        function complete(resp) {
-            o.timeout && clearTimeout(self.timeout)
-            self.timeout = null
-            while (self._completeHandlers.length > 0) {
-                self._completeHandlers.shift()(resp)
-            }
-        }
-
-        function success(resp) {
-            var r = resp.responseText
-            if (r) {
-                switch (type) {
-                    case 'json':
-                        try {
-                            resp = win.JSON ? win.JSON.parse(r) : eval('(' + r + ')')
-                        } catch (err) {
-                            return error(resp, 'Could not parse JSON in response', err)
-                        }
-                        break
-                    case 'js':
-                        resp = eval(r)
-                        break
-                    case 'html':
-                        resp = r
-                        break
-                    case 'xml':
-                        resp = resp.responseXML && resp.responseXML.parseError // IE trololo
-                        &&
-                        resp.responseXML.parseError.errorCode && resp.responseXML.parseError.reason ? null : resp.responseXML
-                        break
-                }
-            }
-
-            self._responseArgs.resp = resp
-            self._fulfilled = true
-            fn(resp)
-            while (self._fulfillmentHandlers.length > 0) {
-                self._fulfillmentHandlers.shift()(resp)
-            }
-
-            complete(resp)
-        }
-
-        function error(resp, msg, t) {
-            self._responseArgs.resp = resp
-            self._responseArgs.msg = msg
-            self._responseArgs.t = t
-            self._erred = true
-            while (self._errorHandlers.length > 0) {
-                self._errorHandlers.shift()(resp, msg, t)
-            }
-            complete(resp)
-        }
-
-        this.request = getRequest.call(this, success, error)
-    }
-
-    Reqwest.prototype = {
-        abort: function () {
-            this._aborted = true
-            this.request.abort()
-        }
-
-        ,
-        retry: function () {
-            init.call(this, this.o, this.fn)
-        }
-
-        /**
-         * Small deviation from the Promises A CommonJs specification
-         * http://wiki.commonjs.org/wiki/Promises/A
-         */
-
-        /**
-         * `then` will execute upon successful requests
-         */
-        ,
-        then: function (success, fail) {
-            if (this._fulfilled) {
-                success(this._responseArgs.resp)
-            } else if (this._erred) {
-                fail(this._responseArgs.resp, this._responseArgs.msg, this._responseArgs.t)
-            } else {
-                this._fulfillmentHandlers.push(success)
-                this._errorHandlers.push(fail)
-            }
-            return this
-        }
-
-        /**
-         * `always` will execute whether the request succeeds or fails
-         */
-        ,
-        always: function (fn) {
-            if (this._fulfilled || this._erred) {
-                fn(this._responseArgs.resp)
-            } else {
-                this._completeHandlers.push(fn)
-            }
-            return this
-        }
-
-        /**
-         * `fail` will execute when the request fails
-         */
-        ,
-        fail: function (fn) {
-            if (this._erred) {
-                fn(this._responseArgs.resp, this._responseArgs.msg, this._responseArgs.t)
-            } else {
-                this._errorHandlers.push(fn)
-            }
-            return this
-        }
-    }
-
-    function reqwest(o, fn) {
-        return new Reqwest(o, fn)
-    }
-
-    // normalize newline variants according to spec -> CRLF
-    function normalize(s) {
-        return s ? s.replace(/\r?\n/g, '\r\n') : ''
-    }
-
-    function serial(el, cb) {
-        var n = el.name,
-            t = el.tagName.toLowerCase(),
-            optCb = function (o) {
-                // IE gives value="" even where there is no value attribute
-                // 'specified' ref: http://www.w3.org/TR/DOM-Level-3-Core/core.html#ID-862529273
-                if (o && !o.disabled) cb(n, normalize(o.attributes.value && o.attributes.value.specified ? o.value : o.text))
-            }, ch, ra, val, i
-
-            // don't serialize elements that are disabled or without a name
-        if (el.disabled || !n) return
-
-        switch (t) {
-            case 'input':
-                if (!/reset|button|image|file/i.test(el.type)) {
-                    ch = /checkbox/i.test(el.type)
-                    ra = /radio/i.test(el.type)
-                    val = el.value
-                    // WebKit gives us "" instead of "on" if a checkbox has no value, so correct it here
-                    ;
-                    (!(ch || ra) || el.checked) && cb(n, normalize(ch && val === '' ? 'on' : val))
-                }
-                break
-            case 'textarea':
-                cb(n, normalize(el.value))
-                break
-            case 'select':
-                if (el.type.toLowerCase() === 'select-one') {
-                    optCb(el.selectedIndex >= 0 ? el.options[el.selectedIndex] : null)
-                } else {
-                    for (i = 0; el.length && i < el.length; i++) {
-                        el.options[i].selected && optCb(el.options[i])
-                    }
-                }
-                break
-        }
-    }
-
-    // collect up all form elements found from the passed argument elements all
-    // the way down to child elements; pass a '<form>' or form fields.
-    // called with 'this'=callback to use for serial() on each element
-    function eachFormElement() {
-        var cb = this,
-            e, i, serializeSubtags = function (e, tags) {
-                var i, j, fa
-                for (i = 0; i < tags.length; i++) {
-                    fa = e[byTag](tags[i])
-                    for (j = 0; j < fa.length; j++) serial(fa[j], cb)
-                }
-            }
-
-        for (i = 0; i < arguments.length; i++) {
-            e = arguments[i]
-            if (/input|select|textarea/i.test(e.tagName)) serial(e, cb)
-            serializeSubtags(e, ['input', 'select', 'textarea'])
-        }
-    }
-
-    // standard query string style serialization
-    function serializeQueryString() {
-        return reqwest.toQueryString(reqwest.serializeArray.apply(null, arguments))
-    }
-
-    // { 'name': 'value', ... } style serialization
-    function serializeHash() {
-        var hash = {}
-        eachFormElement.apply(function (name, value) {
-            if (name in hash) {
-                hash[name] && !isArray(hash[name]) && (hash[name] = [hash[name]])
-                hash[name].push(value)
-            } else hash[name] = value
-        }, arguments)
-        return hash
-    }
-
-    // [ { name: 'name', value: 'value' }, ... ] style serialization
-    reqwest.serializeArray = function () {
-        var arr = []
-        eachFormElement.apply(function (name, value) {
-            arr.push({
-                name: name,
-                value: value
-            })
-        }, arguments)
-        return arr
-    }
-
-    reqwest.serialize = function () {
-        if (arguments.length === 0) return ''
-        var opt, fn, args = Array.prototype.slice.call(arguments, 0)
-
-        opt = args.pop()
-        opt && opt.nodeType && args.push(opt) && (opt = null)
-        opt && (opt = opt.type)
-
-        if (opt === 'map') fn = serializeHash
-        else if (opt === 'array') fn = reqwest.serializeArray
-        else fn = serializeQueryString
-
-        return fn.apply(null, args)
-    }
-
-    reqwest.toQueryString = function (o) {
-        var qs = '',
-            i, enc = encodeURIComponent,
-            push = function (k, v) {
-                qs += enc(k) + '=' + enc(v) + '&'
-            }, k, v
-
-        if (isArray(o)) {
-            for (i = 0; o && i < o.length; i++) push(o[i].name, o[i].value)
-        } else {
-            for (k in o) {
-                if (!Object.hasOwnProperty.call(o, k)) continue
-                v = o[k]
-                if (isArray(v)) {
-                    for (i = 0; i < v.length; i++) push(k, v[i])
-                } else push(k, o[k])
-            }
-        }
-
-        // spaces should be + according to spec
-        return qs.replace(/&$/, '').replace(/%20/g, '+')
-    }
-
-    reqwest.getcallbackPrefix = function () {
-        return callbackPrefix
-    }
-
-    // jQuery and Zepto compatibility, differences can be remapped here so you can call
-    // .ajax.compat(options, callback)
-    reqwest.compat = function (o, fn) {
-        if (o) {
-            o.type && (o.method = o.type) && delete o.type
-            o.dataType && (o.type = o.dataType)
-            o.jsonpCallback && (o.jsonpCallbackName = o.jsonpCallback) && delete o.jsonpCallback
-            o.jsonp && (o.jsonpCallback = o.jsonp)
-        }
-        return new Reqwest(o, fn)
-    }
-
-    return reqwest
-})/**
+    ajax.open('GET', url, true);
+    ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    ajax.send();
+  } else if (method === 'POST') {
+    ajax.open('POST', url, true);
+    ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    ajax.send(sendstring);
+  } else {
+    ajax.open(method, url, true);
+    ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    ajax.send();
+  }
+}
+/**
  * jsHashes - A fast and independent hashing library pure JavaScript implemented (ES3 compliant) for both server and client side
  * 
  * @class Hashes
@@ -2316,19 +2273,19 @@ function getHTML(id) {
 }
 
 function getSalt() {
-  reqwest({
+  majaX({
     url: './salt/',
     type: 'json',
     method: 'post',
     data: {
       timestamp: gettimestamp()
-    },
-    success: function (resp) {
+    }},
+    function (resp) {
       if (resp['success'] == true) {
         serversalt = resp['salt'];
       }
     }
-  })
+  );
 }
 
 function getHPW(mail, pwd) {
@@ -2358,7 +2315,7 @@ function ajaxsignup(emailid, passwordid, nameid) {
     popover('Please fill every field');
     return false;
   }
-  reqwest({
+  majaX({
     url: './database/?signup',
     type: 'json',
     method: 'post',
@@ -2367,8 +2324,8 @@ function ajaxsignup(emailid, passwordid, nameid) {
       hpwd1: hpw1,
       hpwd2: hpw2,
       name: getValue(nameid)
-    },
-    success: function (resp) {
+    }},
+    function (resp) {
       if (resp['success'] == false) {
         popover(resp['msg']);
         return false;
@@ -2384,7 +2341,7 @@ function ajaxsignup(emailid, passwordid, nameid) {
         }
       }
     }
-  })
+  );
 }
 
 function ajaxchange(emailid, passwordid, nameid) {
@@ -2414,7 +2371,7 @@ function ajaxchange(emailid, passwordid, nameid) {
   var hpw1 = SHA512.hex(SHA512.hex(hpw.substr(0, 48) + hpw) + serversalt + clientsalt);
   var hpw2 = SHA512.hex(hpw.substr(46) + hpw);
 
-  reqwest({
+  majaX({
     url: './database/?change',
     type: 'json',
     method: 'post',
@@ -2428,8 +2385,8 @@ function ajaxchange(emailid, passwordid, nameid) {
       nhpwd2: nhpw2,
       name: session_username,
       nname: getValue(nameid)
-    },
-    success: function (resp) {
+    }},
+    function (resp) {
       if (resp['success'] == false) {
         popover(resp['msg']);
         return false;
@@ -2445,7 +2402,7 @@ function ajaxchange(emailid, passwordid, nameid) {
         }
       }
     }
-  })
+  );
 }
 
 function ajaxlogin(emailid, passwordid, ssiid) {
@@ -2458,7 +2415,7 @@ function ajaxlogin(emailid, passwordid, ssiid) {
     ssi = true;
   }
 
-  reqwest({
+  majaX({
     url: './database/?login',
     type: 'json',
     method: 'post',
@@ -2468,8 +2425,8 @@ function ajaxlogin(emailid, passwordid, ssiid) {
       hpwd2: hpw2,
       salt: clientsalt,
       ssi: ssi
-    },
-    success: function (resp) {
+    }},
+    function (resp) {
       if (resp['success'] == true) {
         popoverredirect(resp['msg']);
         window.setTimeout('window.location = "' + selfurl + '"', 12000);
@@ -2477,29 +2434,29 @@ function ajaxlogin(emailid, passwordid, ssiid) {
         popover(resp['msg']);
       }
     }
-  })
+  );
 }
 
 function ajaxlogout() {
-  reqwest({
+  majaX({
     url: './database/?logout',
     type: 'json',
     method: 'post',
     data: {
       logout: 'true',
       timestamp: gettimestamp()
-    },
-    success: function (resp) {
+    }},
+    function (resp) {
       if (resp['success'] == true) {
         window.setTimeout('popoverredirect("logout successful")', 200);
         window.setTimeout('window.location = "' + selfurl + '"', 12000);
       }
     }
-  })
+  );
 }
 
 function ajaxclear() {
-  reqwest({
+  majaX({
     url: './database/?logout',
     type: 'json',
     method: 'post',
@@ -2507,14 +2464,14 @@ function ajaxclear() {
       logout: 'true',
       clear: 'true',
       timestamp: gettimestamp()
-    },
-    success: function (resp) {
+    }},
+    function (resp) {
       if (resp['success'] == true) {
         window.setTimeout('popoverredirect("logout successful")', 200);
         window.setTimeout('window.location = "' + selfurl + '"', 12000);
       }
     }
-  })
+  );
 }
 
 function gettimestamp() {
