@@ -27,13 +27,8 @@ if($_POST['logout'] == 'true')
 <head>
   <meta charset="utf-8">
   <title>reqwest login/signup demos</title>
-  <link href="./repos/baf/css/baf.min.css" rel="stylesheet" type="text/css">
-  <link href="./style.css" rel="stylesheet" type="text/css">
-  <link href="./popover.css" rel="stylesheet" type="text/css">
-  <script type="text/javascript" src="./repos/reqwest/reqwest.min.js"></script>
-  <script type="text/javascript" src="./repos/jsHashes/client/src/hashes.min.js"></script>
-  <script type="text/javascript" src="./repos/lightbox.js/tinybox.js"></script>
-  <script type="text/javascript" src="./script.js"></script>
+  <link type="text/css" href="./build/style.css" rel="stylesheet">
+  <script type="text/javascript" src="./build/script.js"></script>
   <script>
     var userid, username, usermail, clientsalt, serversalt;
     var selfurl = 'http://cdn.simon.waldherr.eu/projects/loginCtrl/example.php';

@@ -13,9 +13,6 @@
 [submodule "repos/lightbox.js"]
 	path = repos/lightbox.js
 	url = git@github.com:SimonWaldherr/lightbox.js.git
-[submodule "repos/reqwest"]
-	path = repos/reqwest
-	url = git@github.com:SimonWaldherr/reqwest.git
 [submodule "repos/smtpclass"]
 	path = repos/smtpclass
 	url = git://github.com/KaiserSoft/PHP_class_email.git
