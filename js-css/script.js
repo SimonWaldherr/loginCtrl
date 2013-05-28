@@ -18,19 +18,19 @@ function getHTML(id) {
 }
 
 function getSalt() {
-  reqwest({
+  majaX({
     url: './salt/',
     type: 'json',
     method: 'post',
     data: {
       timestamp: gettimestamp()
-    },
-    success: function (resp) {
+    }},
+    function (resp) {
       if (resp['success'] == true) {
         serversalt = resp['salt'];
       }
     }
-  })
+  );
 }
 
 function getHPW(mail, pwd) {
@@ -60,7 +60,7 @@ function ajaxsignup(emailid, passwordid, nameid) {
     popover('Please fill every field');
     return false;
   }
-  reqwest({
+  majaX({
     url: './database/?signup',
     type: 'json',
     method: 'post',
@@ -69,8 +69,8 @@ function ajaxsignup(emailid, passwordid, nameid) {
       hpwd1: hpw1,
       hpwd2: hpw2,
       name: getValue(nameid)
-    },
-    success: function (resp) {
+    }},
+    function (resp) {
       if (resp['success'] == false) {
         popover(resp['msg']);
         return false;
@@ -86,7 +86,7 @@ function ajaxsignup(emailid, passwordid, nameid) {
         }
       }
     }
-  })
+  );
 }
 
 function ajaxchange(emailid, passwordid, nameid) {
@@ -116,7 +116,7 @@ function ajaxchange(emailid, passwordid, nameid) {
   var hpw1 = SHA512.hex(SHA512.hex(hpw.substr(0, 48) + hpw) + serversalt + clientsalt);
   var hpw2 = SHA512.hex(hpw.substr(46) + hpw);
 
-  reqwest({
+  majaX({
     url: './database/?change',
     type: 'json',
     method: 'post',
@@ -130,8 +130,8 @@ function ajaxchange(emailid, passwordid, nameid) {
       nhpwd2: nhpw2,
       name: session_username,
       nname: getValue(nameid)
-    },
-    success: function (resp) {
+    }},
+    function (resp) {
       if (resp['success'] == false) {
         popover(resp['msg']);
         return false;
@@ -147,7 +147,7 @@ function ajaxchange(emailid, passwordid, nameid) {
         }
       }
     }
-  })
+  );
 }
 
 function ajaxlogin(emailid, passwordid, ssiid) {
@@ -160,7 +160,7 @@ function ajaxlogin(emailid, passwordid, ssiid) {
     ssi = true;
   }
 
-  reqwest({
+  majaX({
     url: './database/?login',
     type: 'json',
     method: 'post',
@@ -170,8 +170,8 @@ function ajaxlogin(emailid, passwordid, ssiid) {
       hpwd2: hpw2,
       salt: clientsalt,
       ssi: ssi
-    },
-    success: function (resp) {
+    }},
+    function (resp) {
       if (resp['success'] == true) {
         popoverredirect(resp['msg']);
         window.setTimeout('window.location = "' + selfurl + '"', 12000);
@@ -179,29 +179,29 @@ function ajaxlogin(emailid, passwordid, ssiid) {
         popover(resp['msg']);
       }
     }
-  })
+  );
 }
 
 function ajaxlogout() {
-  reqwest({
+  majaX({
     url: './database/?logout',
     type: 'json',
     method: 'post',
     data: {
       logout: 'true',
       timestamp: gettimestamp()
-    },
-    success: function (resp) {
+    }},
+    function (resp) {
       if (resp['success'] == true) {
         window.setTimeout('popoverredirect("logout successful")', 200);
         window.setTimeout('window.location = "' + selfurl + '"', 12000);
       }
     }
-  })
+  );
 }
 
 function ajaxclear() {
-  reqwest({
+  majaX({
     url: './database/?logout',
     type: 'json',
     method: 'post',
@@ -209,14 +209,14 @@ function ajaxclear() {
       logout: 'true',
       clear: 'true',
       timestamp: gettimestamp()
-    },
-    success: function (resp) {
+    }},
+    function (resp) {
       if (resp['success'] == true) {
         window.setTimeout('popoverredirect("logout successful")', 200);
         window.setTimeout('window.location = "' + selfurl + '"', 12000);
       }
     }
-  })
+  );
 }
 
 function gettimestamp() {
