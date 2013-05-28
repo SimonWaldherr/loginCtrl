@@ -27,6 +27,23 @@ LICENSE: MIT
 LANGUAGES: PHP, JS  
 DATABASES: SQLite and MySQL (PostgreSQL coming soon)  
 
+##BUILD
+
+if you want to change something, you need to build it again to test it.  
+
+```
+sudo make dev
+```
+
+to build it uncompressed or  
+
+```
+sudo make min
+```
+
+to build it compressed
+
+
 ##DEMO
 
 [Example v0.10](http://cdn.simon.waldherr.eu/projects/loginCtrl/example.php) *(the newest example)*  
