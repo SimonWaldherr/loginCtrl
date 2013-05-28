@@ -1,6 +1,3 @@
-[submodule "repos/baf"]
-	path = repos/baf
-	url = https://SimonWaldherr@github.com/SimonWaldherr/buttons-and-forms.git
 [submodule "repos/easySQL"]
 	path = repos/easySQL
 	url = https://SimonWaldherr@github.com/SimonWaldherr/easySQL.git
@@ -25,3 +22,9 @@
 [submodule "repos/majaX.js"]
 	path = repos/majaX.js
 	url = https://github.com/SimonWaldherr/majaX.js.git
+[submodule "repos/ColorConverter.js"]
+	path = repos/ColorConverter.js
+	url = https://github.com/SimonWaldherr/ColorConverter.js.git
+[submodule "repos/BaF-Framework"]
+	path = repos/BaF-Framework
+	url = https://github.com/SimonWaldherr/BaF-Framework.git
