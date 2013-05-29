@@ -1,4 +1,43 @@
 /*
+ Copyright 2013 Simon Waldherr
+ https://github.com/SimonWaldherr/loginCtrl
+
+ loginCtrl uses the following Sources
+ https://github.com/SimonWaldherr/majaX.js from Simon Waldherr under MIT license
+ https://github.com/SimonWaldherr/easySQL from Simon Waldherr under MIT license
+ https://github.com/h2non/jsHashes from Tomás Aparicio under BSD license
+ https://github.com/SimonWaldherr/lightbox.js from scriptiny.com under cc-by license
+ https://github.com/KaiserSoft/PHP_class_email from Mirko Kaiser under BSD license
+
+ the rest of loginCtrl is licensed under MIT license
+
+ MIT license:
+ Permission is hereby granted, free of charge, to any person obtaining 
+ a copy of this software and associated documentation files (the 
+ "Software"), to deal in the Software without restriction, including 
+ without limitation the rights to use, copy, modify, merge, publish, 
+ distribute, sublicense, and/or sell copies of the Software, and to 
+ permit persons to whom the Software is furnished to do so, subject to 
+ the following conditions:
+
+ The above copyright notice and this permission notice shall be 
+ included in all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF 
+ ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT 
+ SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
+ ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN 
+ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE 
+ OR OTHER DEALINGS IN THE SOFTWARE.
+
+ more informations about the MIT license can be found at http://en.wikipedia.org/wiki/MIT_License
+ for more informations, please contact contact@simonwaldherr.de
+*/
+
+/*
  * majaX
  *
  * Copyright 2013, Simon Waldherr - http://simon.waldherr.eu/
@@ -493,6 +532,8 @@ function majaX(data, successcallback, errorcallback) {
     ajax.send();
   }
 }
+
+
 /**
  * jsHashes - A fast and independent hashing library pure JavaScript implemented (ES3 compliant) for both server and client side
  * 
@@ -2120,7 +2161,9 @@ function majaX(data, successcallback, errorcallback) {
       window.Hashes = Hashes;
     }
   }( this ));
-}()); // IIFETINY={};
+}()); // IIFE
+
+TINY={};
 
 TINY.box=function(){
 	var j,m,b,g,v,p=0;
@@ -2253,7 +2296,9 @@ TINY.box=function(){
 			Math.max(Math.max(b.scrollWidth,e.scrollWidth),Math.max(b.clientWidth,e.clientWidth))
 		}
 	}
-}();/*
+}();
+
+/*
  *
  * Repo: https://github.com/SimonWaldherr/loginCtrl
  * Demo: http://cdn.simon.waldherr.eu/projects/loginCtrl/
@@ -2276,7 +2321,7 @@ function getSalt() {
   majaX({
     url: './salt/',
     type: 'json',
-    method: 'post',
+    method: 'POST',
     data: {
       timestamp: gettimestamp()
     }},
@@ -2318,7 +2363,7 @@ function ajaxsignup(emailid, passwordid, nameid) {
   majaX({
     url: './database/?signup',
     type: 'json',
-    method: 'post',
+    method: 'POST',
     data: {
       mail: getValue(emailid).toLowerCase(),
       hpwd1: hpw1,
@@ -2374,7 +2419,7 @@ function ajaxchange(emailid, passwordid, nameid) {
   majaX({
     url: './database/?change',
     type: 'json',
-    method: 'post',
+    method: 'POST',
     data: {
       salt: clientsalt,
       mail: session_usermail.toLowerCase(),
@@ -2418,7 +2463,7 @@ function ajaxlogin(emailid, passwordid, ssiid) {
   majaX({
     url: './database/?login',
     type: 'json',
-    method: 'post',
+    method: 'POST',
     data: {
       mail: getValue(emailid).toLowerCase(),
       hpwd1: hpw1,
@@ -2441,7 +2486,7 @@ function ajaxlogout() {
   majaX({
     url: './database/?logout',
     type: 'json',
-    method: 'post',
+    method: 'POST',
     data: {
       logout: 'true',
       timestamp: gettimestamp()
@@ -2459,7 +2504,7 @@ function ajaxclear() {
   majaX({
     url: './database/?logout',
     type: 'json',
-    method: 'post',
+    method: 'POST',
     data: {
       logout: 'true',
       clear: 'true',

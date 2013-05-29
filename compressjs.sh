@@ -2,7 +2,7 @@
 
 # Constants
 SERVICE_URL=http://closure-compiler.appspot.com/compile
-NEWFILE="build/script.js"
+NEWFILE="build/script.pre.js"
 
 # Check if files to compile are provided
 if [ $# -eq 0 ]

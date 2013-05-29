@@ -21,7 +21,7 @@ function getSalt() {
   majaX({
     url: './salt/',
     type: 'json',
-    method: 'post',
+    method: 'POST',
     data: {
       timestamp: gettimestamp()
     }},
@@ -63,7 +63,7 @@ function ajaxsignup(emailid, passwordid, nameid) {
   majaX({
     url: './database/?signup',
     type: 'json',
-    method: 'post',
+    method: 'POST',
     data: {
       mail: getValue(emailid).toLowerCase(),
       hpwd1: hpw1,
@@ -119,7 +119,7 @@ function ajaxchange(emailid, passwordid, nameid) {
   majaX({
     url: './database/?change',
     type: 'json',
-    method: 'post',
+    method: 'POST',
     data: {
       salt: clientsalt,
       mail: session_usermail.toLowerCase(),
@@ -163,7 +163,7 @@ function ajaxlogin(emailid, passwordid, ssiid) {
   majaX({
     url: './database/?login',
     type: 'json',
-    method: 'post',
+    method: 'POST',
     data: {
       mail: getValue(emailid).toLowerCase(),
       hpwd1: hpw1,
@@ -186,7 +186,7 @@ function ajaxlogout() {
   majaX({
     url: './database/?logout',
     type: 'json',
-    method: 'post',
+    method: 'POST',
     data: {
       logout: 'true',
       timestamp: gettimestamp()
@@ -204,7 +204,7 @@ function ajaxclear() {
   majaX({
     url: './database/?logout',
     type: 'json',
-    method: 'post',
+    method: 'POST',
     data: {
       logout: 'true',
       clear: 'true',

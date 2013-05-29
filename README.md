@@ -22,7 +22,7 @@ loginCtrl...
 
 ##INFO
 
-VERSION: 0.10  
+VERSION: 0.11  
 LICENSE: MIT  
 LANGUAGES: PHP, JS  
 DATABASES: SQLite and MySQL (PostgreSQL coming soon)  
@@ -46,7 +46,7 @@ to build it compressed
 
 ##DEMO
 
-[Example v0.10](http://cdn.simon.waldherr.eu/projects/loginCtrl/example.php) *(the newest example)*  
+[Example v0.11](http://cdn.simon.waldherr.eu/projects/loginCtrl/example.php) *(the newest example)*  
 
 since version 0.04, their is only the newest example in the repo. To view other/older examples, please checkout an older commit.
 
@@ -54,6 +54,7 @@ since version 0.04, their is only the newest example in the repo. To view other/
 
 Version | Download
 --------|---------
+0.11    | [ZIP](https://github.com/SimonWaldherr/loginCtrl/archive/V0.11.zip)  
 0.10    | [ZIP](https://github.com/SimonWaldherr/loginCtrl/archive/V0.10.zip)  
 0.09    | [ZIP](https://github.com/SimonWaldherr/loginCtrl/archive/V0.09.zip)  
 
