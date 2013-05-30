@@ -1,43 +1,44 @@
 <!DOCTYPE html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="loginCtrl : a easy to use, free login system. (PHP, JS, SQLite/MySQL)" />
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
 
-    <title>loginCtrl</title>
+    <title>loginCtrl by SimonWaldherr</title>
   </head>
 
   <body>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/SimonWaldherr/loginCtrl">View on GitHub</a>
+    <header>
+      <div class="container">
+        <h1>loginCtrl</h1>
+        <h2>a easy to use, free login system. (PHP, JS, SQLite/MySQL)</h2>
 
-          <h1 id="project_title">loginCtrl</h1>
-          <h2 id="project_tagline">a easy to use, free login system. (PHP, JS, SQLite/MySQL)</h2>
+        <section id="downloads">
+          <a href="https://github.com/SimonWaldherr/loginCtrl/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/SimonWaldherr/loginCtrl/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/SimonWaldherr/loginCtrl" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/SimonWaldherr/loginCtrl/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/SimonWaldherr/loginCtrl/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h1><a href="https://github.com/SimonWaldherr/loginCtrl">loginCtrl</a></h1>
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a name="loginctrl" class="anchor" href="#loginctrl"><span class="octicon octicon-link"></span></a><a href="https://github.com/SimonWaldherr/loginCtrl">loginCtrl</a>
+</h1>
 
 <p>an easy to use, free login system. (sqlite + PHP + JS)</p>
 
-<h2>ABOUT</h2>
+<h2>
+<a name="about" class="anchor" href="#about"><span class="octicon octicon-link"></span></a>ABOUT</h2>
 
-<h3>Why should i use loginCtrl instead of other login scripts?</h3>
+<h3>
+<a name="why-should-i-use-loginctrl-instead-of-other-login-scripts" class="anchor" href="#why-should-i-use-loginctrl-instead-of-other-login-scripts"><span class="octicon octicon-link"></span></a>Why should i use loginCtrl instead of other login scripts?</h3>
 
 <p>loginCtrl...</p>
 
@@ -45,30 +46,69 @@
 <li>never saves passwords unencrypted</li>
 <li>never submit passwords unencrypted</li>
 <li>always hash passwords with random salts</li>
-<li>allows users to change their data</li>
+<li>allows users to change their data (currently broken)</li>
 <li>check given eMail-adresses</li>
 <li>works with mySQL and SQLite</li>
-</ul><h3>What do i need to use loginCtrl?</h3>
+</ul><h3>
+<a name="what-do-i-need-to-use-loginctrl" class="anchor" href="#what-do-i-need-to-use-loginctrl"><span class="octicon octicon-link"></span></a>What do i need to use loginCtrl?</h3>
 
 <ul>
 <li>PHP5 <em>with mysqli or sqlite</em>
 </li>
 <li><em>mySQL Database</em></li>
 <li>eMail Server</li>
-</ul><h2>INFO</h2>
+</ul><h2>
+<a name="info" class="anchor" href="#info"><span class="octicon octicon-link"></span></a>INFO</h2>
 
-<p>VERSION: 0.09<br>
+<p>VERSION: 0.11<br>
 LICENSE: MIT<br>
 LANGUAGES: PHP, JS<br>
 DATABASES: SQLite and MySQL (PostgreSQL coming soon)  </p>
 
-<h2>DEMO</h2>
+<h2>
+<a name="build" class="anchor" href="#build"><span class="octicon octicon-link"></span></a>BUILD</h2>
 
-<p><a href="http://cdn.simon.waldherr.eu/projects/loginCtrl/example.php">Example v0.09</a> <em>(the newest example)</em>  </p>
+<p>if you want to change something, you need to build it again to test it.  </p>
+
+<pre><code>sudo make dev
+</code></pre>
+
+<p>to build it uncompressed or  </p>
+
+<pre><code>sudo make min
+</code></pre>
+
+<p>to build it compressed</p>
+
+<h2>
+<a name="demo" class="anchor" href="#demo"><span class="octicon octicon-link"></span></a>DEMO</h2>
+
+<p><a href="http://cdn.simon.waldherr.eu/projects/loginCtrl/example.php">Example v0.11</a> <em>(the newest example)</em>  </p>
 
 <p>since version 0.04, their is only the newest example in the repo. To view other/older examples, please checkout an older commit.</p>
 
-<h2>REQUIRE</h2>
+<h2>
+<a name="history" class="anchor" href="#history"><span class="octicon octicon-link"></span></a>HISTORY</h2>
+
+<table>
+<tr>
+<th>Version</th>
+<th>Download</th>
+</tr>
+<tr>
+<td>0.11</td>
+<td><a href="https://github.com/SimonWaldherr/loginCtrl/archive/V0.11.zip">ZIP</a></td>
+</tr>
+<tr>
+<td>0.10</td>
+<td><a href="https://github.com/SimonWaldherr/loginCtrl/archive/V0.10.zip">ZIP</a></td>
+</tr>
+<tr>
+<td>0.09</td>
+<td><a href="https://github.com/SimonWaldherr/loginCtrl/archive/V0.09.zip">ZIP</a></td>
+</tr>
+</table><h2>
+<a name="require" class="anchor" href="#require"><span class="octicon octicon-link"></span></a>REQUIRE</h2>
 
 <table>
 <tr>
@@ -77,7 +117,7 @@ DATABASES: SQLite and MySQL (PostgreSQL coming soon)  </p>
 <th>DL</th>
 </tr>
 <tr>
-<td><a href="https://github.com/SimonWaldherr/reqwest">SimonWaldherr/reqwest</a></td>
+<td><a href="https://github.com/SimonWaldherr/majaX.js">SimonWaldherr/majaX.js</a></td>
 <td>MIT</td>
 <td><a href="https://github.com/SimonWaldherr/reqwest/zipball/master">zip</a></td>
 </tr>
@@ -103,7 +143,8 @@ DATABASES: SQLite and MySQL (PostgreSQL coming soon)  </p>
 </tr>
 </table><p><em>all required repos are included as git submodules in this repo.</em></p>
 
-<h2>LICENSE</h2>
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>LICENSE</h2>
 
 <p>The MIT License (MIT)<br>
 Copyright © 2013 Simon Waldherr</p>
@@ -118,14 +159,6 @@ Copyright © 2013 Simon Waldherr</p>
       </section>
     </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">loginCtrl maintained by <a href="https://github.com/SimonWaldherr">SimonWaldherr</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
               <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -136,7 +169,6 @@ Copyright © 2013 Simon Waldherr</p>
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
-
 
   </body>
 </html>
