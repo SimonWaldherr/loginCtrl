@@ -1,1 +1,1 @@
-juicer merge ./js-css/master.css -o ./build/style.pre.css
+juicer merge ./js-css/master.css -o ./release/build/style.pre.css
