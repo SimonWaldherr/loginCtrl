@@ -1,15 +1,6 @@
 [submodule "repos/easySQL"]
 	path = repos/easySQL
 	url = https://SimonWaldherr@github.com/SimonWaldherr/easySQL.git
-[submodule "repos/geolib"]
-	path = repos/geolib
-	url = https://SimonWaldherr@github.com/SimonWaldherr/Geolib.git
-[submodule "repos/html5forms.js"]
-	path = repos/html5forms.js
-	url = https://SimonWaldherr@github.com/SimonWaldherr/html5Forms.js.git
-[submodule "repos/jsHashes"]
-	path = repos/jsHashes
-	url = git://github.com/h2non/jsHashes.git
 [submodule "repos/lightbox.js"]
 	path = repos/lightbox.js
 	url = git@github.com:SimonWaldherr/lightbox.js.git
@@ -25,3 +16,6 @@
 [submodule "repos/BaF-Framework"]
 	path = repos/BaF-Framework
 	url = https://github.com/SimonWaldherr/BaF-Framework.git
+[submodule "repos/cryptofoo"]
+	path = repos/cryptofoo
+	url = https://github.com/SimonWaldherr/cryptofoo.git

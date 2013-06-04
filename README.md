@@ -22,7 +22,7 @@ loginCtrl...
 
 ##INFO
 
-VERSION: 0.11  
+VERSION: 0.12  
 LICENSE: MIT  
 LANGUAGES: PHP, JS  
 DATABASES: SQLite and MySQL (PostgreSQL coming soon)  
@@ -46,7 +46,7 @@ to build it compressed
 
 ##DEMO
 
-[Example v0.11](http://cdn.simon.waldherr.eu/projects/loginCtrl/example.php) *(the newest example)*  
+[Example v0.12](http://cdn.simon.waldherr.eu/projects/loginCtrl/example.php) *(the newest example)*  
 
 since version 0.04, their is only the newest example in the repo. To view other/older examples, please checkout an older commit.
 
@@ -54,6 +54,7 @@ since version 0.04, their is only the newest example in the repo. To view other/
 
 Version | Download
 --------|---------
+0.12    | [ZIP](https://github.com/SimonWaldherr/loginCtrl/archive/V0.12.zip)  
 0.11    | [ZIP](https://github.com/SimonWaldherr/loginCtrl/archive/V0.11.zip)  
 0.10    | [ZIP](https://github.com/SimonWaldherr/loginCtrl/archive/V0.10.zip)  
 0.09    | [ZIP](https://github.com/SimonWaldherr/loginCtrl/archive/V0.09.zip)  
@@ -64,7 +65,7 @@ Repo                                                                        | Li
 ----------------------------------------------------------------------------|---------|----------
 [SimonWaldherr/majaX.js](https://github.com/SimonWaldherr/majaX.js)         | MIT     | [zip](https://github.com/SimonWaldherr/reqwest/zipball/master)
 [SimonWaldherr/easySQL](https://github.com/SimonWaldherr/easySQL)           | MIT     | [zip](https://github.com/SimonWaldherr/easySQL/zipball/master)
-[h2non/jsHashes](https://github.com/h2non/jsHashes)                         | BSD     | [zip](https://github.com/h2non/jsHashes/zipball/master)
+[SimonWaldherr/cryptofoo](https://github.com/SimonWaldherr/cryptofoo)       | MIT     | [zip](https://github.com/SimonWaldherr/cryptofoo/zipball/master)
 [SimonWaldherr/lightbox.js](https://github.com/SimonWaldherr/lightbox.js)   | CC-By   | [zip](https://github.com/SimonWaldherr/lightbox.js/zipball/master)
 [KaiserSoft/PHP_class_email](https://github.com/KaiserSoft/PHP_class_email) | BSD     | [zip](https://github.com/KaiserSoft/PHP_class_email/zipball/master)
 

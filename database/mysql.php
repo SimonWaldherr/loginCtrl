@@ -5,7 +5,7 @@
  * Repo: https://github.com/SimonWaldherr/loginCtrl
  * Demo: http://cdn.simon.waldherr.eu/projects/loginCtrl/
  * License: MIT
- * Version: 0.11
+ * Version: 0.12
  *
  * File: database/mysql.php
  *
@@ -35,7 +35,7 @@ function lc_login($mysqlarray, $emailadr, $hashdpwd1, $hashdpwd2, $clientsalt) {
 
     foreach ($returnarray as $user) {
         if (easysql_hashmix($hashdpwd2 . $user['username'] . $user['usersalt']) == $user['password2']) {
-            if ((hash("SHA512", $user['password1'] . $_SESSION['salt'] . $clientsalt) == $hashdpwd1) && ($user['status'] > 1)) {
+            if ((hash("whirlpool", $user['password1'] . $_SESSION['salt'] . $clientsalt) == $hashdpwd1) && ($user['status'] > 1)) {
                 $_SESSION['userid']   = $user['uid'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['usermail'] = $user['emailadr'];
@@ -55,7 +55,7 @@ function lc_login($mysqlarray, $emailadr, $hashdpwd1, $hashdpwd2, $clientsalt) {
                     'signupts' => $_SESSION['signupts'],
                     'logints' => $_SESSION['logints']
                 );
-            } elseif ((hash("SHA512", $user['password1'] . $_SESSION['salt'] . $clientsalt) == $hashdpwd1) && ($user['status'] == 1)) {
+            } elseif ((hash("whirlpool", $user['password1'] . $_SESSION['salt'] . $clientsalt) == $hashdpwd1) && ($user['status'] == 1)) {
                 return array(
                     'msg' => 'please confirm your eMail-Adress first',
                     'success' => false
@@ -159,7 +159,7 @@ function lc_signup($mysqlarray, $username, $emailadr, $hashdpwd1, $hashdpwd2, $u
         $insert['uid']       = ($sorted[0]['uid'] + 1);
         $insert['username']  = $username;
         $insert['userhash']  = $userhash;
-        $insert['usersalt']  = hash("SHA256", rand(10000, 100000000) . $_SESSION['salt'] . $username . rand(10000, 100000000) . microtime(1));
+        $insert['usersalt']  = hash("whirlpool", rand(10000, 100000000) . $_SESSION['salt'] . $username . rand(10000, 100000000) . microtime(1));
         $insert['password1'] = $hashdpwd1;
         $insert['password2'] = easysql_hashmix($hashdpwd2 . $username . $insert['usersalt']);
         $insert['emailadr']  = $emailadr;
@@ -175,7 +175,7 @@ function lc_signup($mysqlarray, $username, $emailadr, $hashdpwd1, $hashdpwd2, $u
             require_once './../sendmail.php';
 
             if ($status == '1') {
-                $confirmMail = hash("SHA256", 'confirmMail("' . $insert['emailadr'] . $insert['timestam'] . $insert['username'] . $rowid[0] . '");');
+                $confirmMail = hash("whirlpool", 'confirmMail("' . $insert['emailadr'] . $insert['timestam'] . $insert['username'] . $rowid[0] . '");');
                 $confirmURL  = 'http://cdn.simon.waldherr.eu/projects/loginCtrl/confirm/?email=' . urlencode($insert['emailadr']) . '&username=' . urlencode($insert['username']) . '&check=' . md5($confirmMail);
                 $confirmText = 'Thank you for registering for loginCtrl.' . "\r\n\r\n" . 'To confirm your registration, open the following link: ' . $confirmURL . "\r\n\r\n" . 'The preregistration in the Database will be deleted in approximately one week.' . "\r\n" . 'If you received this email by mistake, simply delete it. You won&rsquo;t be subscribed if you don&rsquo;t click the confirmation link above.' . "\r\n" . 'The registration was triggered by:' . "\r\n\r\n" . 'USERAGENT: ' . $_SERVER["HTTP_USER_AGENT"] . "\r\n" . 'IP-ADRESS: ' . $_SERVER["REMOTE_ADDR"] . "\r\n" . 'TIMESTAMP: ' . $_SERVER["REQUEST_TIME"] . "\r\n\r\n" . 'For questions about this list, please contact: help@example.com';
 

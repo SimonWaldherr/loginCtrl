@@ -5,7 +5,7 @@
  loginCtrl uses the following Sources
  https://github.com/SimonWaldherr/majaX.js from Simon Waldherr under MIT license
  https://github.com/SimonWaldherr/easySQL from Simon Waldherr under MIT license
- https://github.com/h2non/jsHashes from Tomás Aparicio under BSD license
+ https://github.com/SimonWaldherr/cryptofoo from Simon Waldherr under MIT license
  https://github.com/SimonWaldherr/lightbox.js from scriptiny.com under cc-by license
  https://github.com/KaiserSoft/PHP_class_email from Mirko Kaiser under BSD license
 
