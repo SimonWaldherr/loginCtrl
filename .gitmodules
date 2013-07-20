@@ -19,3 +19,6 @@
 [submodule "repos/cryptofoo"]
 	path = repos/cryptofoo
 	url = https://github.com/SimonWaldherr/cryptofoo.git
+[submodule "repos/DOMpteur"]
+	path = repos/DOMpteur
+	url = git@github.com:SimonWaldherr/DOMpteur.git
