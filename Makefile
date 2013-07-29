@@ -1,5 +1,6 @@
 #
 # BUILD ALL JS AND CSS FILES FOR ./build/
+# $ make dev
 #
 
 dev:
@@ -42,6 +43,7 @@ dev:
 
 #
 # BUILDS AND COMPRESS ALL JS AND CSS FILES FOR ./build/
+# $ make min
 #
 
 min:
@@ -78,8 +80,7 @@ min:
 	cp ./gravatar.php ./release/gravatar.php
 	cp ./sendmail.php ./release/sendmail.php
 	cp ./session.inc.php ./release/session.inc.php
-	sudo sh ./buildjs.sh
-	sudo sh ./juicer.sh
+	grunt
 	cat ./js-css/info.txt ./release/build/script.pre.js > ./release/build/script.js
 	cat ./js-css/info.txt ./release/build/style.pre.css > ./release/build/style.css
 	rm -rf ./release/build/script.pre.js

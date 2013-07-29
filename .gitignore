@@ -2,3 +2,5 @@
 *Thumbs.db
 -ignore
 -trash
+node_modules
+release
