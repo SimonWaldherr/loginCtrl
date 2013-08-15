@@ -22,3 +22,6 @@
 [submodule "repos/DOMpteur"]
 	path = repos/DOMpteur
 	url = git@github.com:SimonWaldherr/DOMpteur.git
+[submodule "repos/OTP-CAPTCHA"]
+	path = repos/OTP-CAPTCHA
+	url = git@github.com:SimonWaldherr/OTP-CAPTCHA.git
